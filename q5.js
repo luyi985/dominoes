@@ -108,7 +108,19 @@
  			_this.playerPool.push(new player(v,i+1));
  		})
  	}
-
+ 	dominoGame.prototype.isfinish=function(){
+ 		var isPlayerEmpty=false;
+ 		var isStoreEmpty=this.store.length>0?false:true;
+ 		this.playerPool.map(function(v){
+ 			if(v.tiles.length<=0) isPlayerEmpty=ture;
+ 		});
+ 		return isPlayerEmpty&&isStoreEmpty;
+ 	}
+ 	dominoGame.prototype.play=function(){
+ 		while(!this.isfinish()){
+ 			
+ 		}
+ 	}
  	//----------------------------------------
     var d=new dominoGame(o.set,o.players);
     d.buildGame();
