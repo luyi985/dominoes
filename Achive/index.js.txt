@@ -1,0 +1,231 @@
+/** Q1 **/
+console.log("Q1 *********************************");
+function wordCount(input) {
+  
+  var characters, words, lines;
+  
+  // TODO: add your code here to count the characters, words
+  // and lines passed in the input string
+  characters=input.length;
+  words=0;
+  lines=0;
+
+  if(input&&input.length>0){
+    words++;
+    lines++;
+    input.split("").map(function(w){
+      if(w==="\n"||w===" ") words++;
+      if(w==="\n") lines++;
+    });  
+  }
+  else{
+    words=0;
+    lines=0;
+  }
+ 
+    
+
+  console.log("input: "+input);
+  console.log("characters: "+characters);
+  console.log("words: "+words);
+  console.log("lines: "+lines);
+  console.log("\n");
+  
+}
+
+[
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor",
+  "",
+  "This string is split\nover\nthree\nlines"
+].forEach(function(s) {
+  wordCount(s);
+});
+
+
+
+/** Q2 **/
+console.log("Q2 *********************************");
+
+function factorial(n) {
+  
+  // TODO: implement this function to correctly calculate and return 
+  // the factorial of the given number
+  if(n<0) return false;
+  else if(n==0) return 0;
+  else{
+    var t=n;
+    while(t-- >2){
+      n*=t;
+    }
+  }
+  return n;
+}
+
+[9, 4, 1, 0].forEach(function(n) {
+  console.log("factorial "+n+" is "+factorial(n));
+});
+
+
+/** Q3 **/
+console.log("Q3 *********************************");
+
+function swap(arr,first,second){
+    var temp=arr[first];
+    arr[second]=arr[first];
+    arr[first]=temp;
+}
+
+function sort(numbers) {
+  /** 
+   * TODO implement a sorting function that sorts the input list
+   * in ascending numeric order. 
+   * 
+   * - Don't use the built-in Array.sort() method
+   * - It's OK to return a new Array with the sorted result
+   * - It's OK to add additional function declarations within this function
+   */ 
+  function partition(arr,left,right){
+    var pivot   = arr[Math.floor((right + left) / 2)],
+        i       = left,
+        j       = right;
+    while (i <= j) {
+        while (arr[i] < pivot) {
+            i++;
+        }
+        while (arr[j] > pivot) {
+            j--;
+        }
+        if (i <= j) {
+            swap(arr, i, j);
+            i++;
+            j--;
+        }
+    }
+    return i;
+  }
+
+  function quickSort(arr,left,right){
+    var index;
+    if(arr.length>1){
+      index=partition(arr,left,right);
+      if (left < index - 1) {
+          quickSort(arr, left, index - 1);
+      }
+
+      if (index < right) {
+          quickSort(arr, index, right);
+      }
+    }
+    return arr;
+  }
+
+
+  return quickSort(numbers,0,numbers.length-1);
+}
+
+function reverseSort(numbers) {
+  /** 
+   * TODO implement a sorting function that sorts the input list
+   * in descending numeric order. 
+   * 
+   * - Don't use the built-in Array.sort() method
+   * - It's OK to return a new Array with the sorted result
+   * - It's OK to add additional function declarations within this function
+   */
+   if(numbers.length<1) return false;
+   return sort(numbers).reverse();
+}
+
+function randomSort(numbers) {
+  /** 
+   * TODO implement a sorting function that sorts the input list
+   * in a random order. 
+   * 
+   * - It's OK to return a new Array with the sorted result
+   * - It's OK to add additional function declarations within this function
+   */
+   function randInt(max){
+      return parseInt(Math.random()*max);
+   }
+   for(var i=numbers.length-1;i>0;i--){
+      swap(numbers,i,randInt(i));
+   }
+   return numbers;
+}
+
+var numbers = [0, 2, 6, 24, 22 , 4, 2, 66, 23, 12, 12, 5, 123, 22];
+
+console.log(sort(numbers));
+console.log(reverseSort(numbers));
+console.log(randomSort(numbers));
+
+
+
+
+/** Q4 **/
+
+
+/** TODO: complete this implementation of a set of dominos. It should 
+ * expose one function - pickup() - which randomly selects a tile from
+ * the available 28 dominos. A tile should be represented as a 2-tuple, 
+ * e.g. [6, 6] is a double six, [0, 3] is a blank/three.
+ */
+var dominos = function() {
+  this.pickPool=[];
+  for(var left=0;left<=6;left++){
+    for(var right=left;right>=0;right--){
+      this.pickPool.push([left,right]);
+    }
+  }
+//-------------------------------
+  this.selected=[];
+//-------------------------------
+  this.restart=function(){
+    this.selected=[];
+    this.selected.length=0;
+  }
+//-------------------------------
+  function randomPick(){
+    return Math.floor(Math.random()*28);
+  }
+  this.pickup = function() {
+    var t=randomPick();
+    if (this.selected.length==28) return false;
+    if (this.selected.indexOf(t)===-1) {
+      this.selected.push(t);
+      return this.pickPool[t];
+    }
+    return this.pickup();
+  };
+  return this;
+};
+
+// TODO: uncomment the below to test your implementation
+ var d =dominos();
+ for (var i=0; i<28; i++) {
+   console.log(d.pickup());
+ }
+console.log(d.pickup());
+console.log(d.pickup());
+console.log(d.pickup());
+console.log(d.pickup());
+console.log(d.pickup());
+
+/** Q5 **/
+
+/**
+ * TODO: simulate a two player game of dominos using the rules from
+ * http://www.domino-games.com/domino-rules/allfives-rules.html
+ * 
+ * - there is no requirement to implement any AI to maximise a player's
+ *   score, playing a valid move at random is fine
+ * - the simulation should print out a description of every move played,
+ *   e.g. player 1 picked up [4, 2] ... player 2 played [1, 4] adjacent 
+ *   to [1, 1] ... player 1 played [4, 2] adjacent to [1, 4]
+ * - bonus points for rendering / printing a visual representation of the 
+ *   board at the end of the simulation
+ * - document any assumptions you've made or any rules that you weren't
+ *   able to implement fully
+ */
+ 
+
