@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "gitAdd": "git add --all",
-    "gitCommit": "git commit -m 'save'",
+    "gitCommit": "git commit -m 'save1'",
     "gitPush": "git push origin -u",
     "save": "npm run gitAdd & npm run gitCommit & npm run gitPush"
   },
