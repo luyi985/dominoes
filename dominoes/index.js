@@ -3,17 +3,21 @@
  	//tile--------------------------
  	var tile=function(v){
  		this.value=v;
+ 		this.edge=v.map(function(tv){
+ 			return tv;
+ 		})
  	}
  	tile.prototype.merge=function(n){
- 		var isMerge=this.value.indexOf(n);
+ 		var isMerge=this.edge.indexOf(n);
  		if(isMerge===-1) return false;
- 		this.value.splice(isMerge,1); return true;
+ 		this.edge.splice(isMerge,1); return true;
  	}
- 	tile.prototype.getValue=function(){
- 		if( this.value.length<=0 ) return false;
- 		if( this.value.length>1 ){ return this.value[0]*2 } // for the tile with the same value
+ 	tile.prototype.calPoint=function(){
+ 		if( this.edge.length<=0 ) return 0;
+ 		if( this.edge.length>1 ){ return this.value[0]*2 } // for the tile with the same value
  		else return this.value[0]; // for the tile with different value
  	}
+
  	//Player-------------------------------
  	var player=function(tiles,name){
  		this.tiles=tiles;
@@ -27,6 +31,12 @@
  	}
  	player.prototype.pick=function(t){
  		this.tiles.push(t);
+ 		console.log(this.name+ " picked tile ["+ t.value.toString() + "]")
+ 	}
+ 	player.prototype.put=function(){
+ 		var t=this.tiles.pop();
+ 		console.log(this.name+ " put tile ["+ t.value.toString() + "]");
+ 		return t;
  	}
  	//Dominoes-----------------------------
  	var dominoGame=function(set,playerNum){
@@ -34,6 +44,7 @@
  		this.tilesPool=[];
  		this.playerPool=[];
  		this.store=[];
+ 		this.playingPool=[];
  		this.playerNum=playerNum;
  	}
  	dominoGame.prototype.init=function(){
@@ -99,16 +110,46 @@
  		});
  		return isPlayerEmpty&&isStoreEmpty;
  	}
- 	dominoGame.prototype.play=function(){
- 		while(!this.isfinish()){
 
- 		}
+ 	dominoGame.prototype.getOpenEdge=function(){
+ 		if (this.playingPool.length===0) return [];
+ 		return this.playingPool.map(function(t){
+ 			
+ 		})
+ 	}
+ 	dominoGame.prototype.putTile=function(player,cb){
+ 		t=player.put();
+ 		this.playingPool.push(t);
+ 		if(cb) cb(t);
+ 	}
+ 	dominoGame.prototype.pickTile=function(player,cb){
+ 		var t=this.store[0].pop();
+ 		player.pick(t);
+ 		if(cb) cb(t);
+ 	}
+ 	dominoGame.prototype.play=function(){
+ 		var _this=this;
+ 		this.playerPool.map(function(p){
+ 			_this.putTile(p,function(){
+ 				console.log("playingPool ");
+ 				console.log(_this.playingPool);
+ 			});
+ 			_this.pickTile(p,function(){
+ 				console.log("Sotre ");
+ 				console.log(_this.store);
+ 			});
+ 		})
  	}
  	//----------------------------------------
     var d=new dominoGame(o.set,o.players);
     d.buildGame();
-    console.log(d.playerPool);
+    d.play();
  })({
  	players		: 	3,
  	set 		:  	6
  })
+
+
+
+
+
