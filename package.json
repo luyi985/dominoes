@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "save": "git add --all & git commit -m 'save' & git push orgin -u"
+    "gitAdd": "git add --all",
+    "gitCommit": "git commit -m 'save'",
+    "gitPush": "git push orgin -u",
+    "save": "npm run gitAdd & npm run gitCommit & npm run gitPush"
   },
   "repository": {
     "type": "git",
