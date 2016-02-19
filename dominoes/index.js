@@ -118,7 +118,7 @@
  	}
  	dominoGame.prototype.play=function(){
  		while(!this.isfinish()){
- 			
+
  		}
  	}
  	//----------------------------------------
@@ -126,6 +126,6 @@
     d.buildGame();
     console.log(d.playerPool);
  })({
- 	players		: 	2,
+ 	players		: 	3,
  	set 		:  	6
  })
