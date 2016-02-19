@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "save": "git add --all && git commit -m 'save' && git push orgin -u"
+    "save": "git add --all & git commit -m 'save' & git push orgin -u"
   },
   "repository": {
     "type": "git",
