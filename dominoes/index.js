@@ -133,7 +133,6 @@
  			_this.putTile(p,function(){
  				/*console.log("playingPool ");
  				console.log(_this.playingPool);*/
- 				console.log("NIUNIU");
  				console.log(_this.getOpenEdge().map(function(v){
  					return v.value.toString();
  				}));

@@ -7,7 +7,7 @@
     "gitAdd": "git add --all",
     "gitCommit": "git commit -m 'save'",
     "gitPush": "git push origin -u",
-    "save": "npm run gitAdd & npm run gitCommit & npm run gitPush"
+    "save": "npm run gitAdd & npm run gitCommit"
   },
   "repository": {
     "type": "git",
