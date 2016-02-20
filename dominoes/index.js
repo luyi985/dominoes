@@ -97,7 +97,7 @@
  			if(pointer>this.playerNum) pointer=0;
  			t[pointer++].push(this.tilesPool.pop());
  		}
- 		this.store=t.splice(len%(this.playerNum+1)-1,1);
+ 		this.store=t.splice(len%(this.playerNum+1)-1,1)[0];
  		t.map(function(v,i){
  			_this.playerPool.push(new player(v,i+1));
  		})
@@ -114,7 +114,7 @@
  	dominoGame.prototype.getOpenEdge=function(){
  		if (this.playingPool.length===0) return [];
  		return this.playingPool.map(function(t){
- 			
+ 			if(t.calPoint) return t;
  		})
  	}
  	dominoGame.prototype.putTile=function(player,cb){
@@ -123,7 +123,7 @@
  		if(cb) cb(t);
  	}
  	dominoGame.prototype.pickTile=function(player,cb){
- 		var t=this.store[0].pop();
+ 		var t=this.store.pop();
  		player.pick(t);
  		if(cb) cb(t);
  	}
@@ -131,8 +131,11 @@
  		var _this=this;
  		this.playerPool.map(function(p){
  			_this.putTile(p,function(){
- 				console.log("playingPool ");
- 				console.log(_this.playingPool);
+ 				/*console.log("playingPool ");
+ 				console.log(_this.playingPool);*/
+ 				console.log(_this.getOpenEdge().map(function(v){
+ 					return v.value.toString();
+ 				}));
  			});
  			_this.pickTile(p,function(){
  				console.log("Sotre ");
