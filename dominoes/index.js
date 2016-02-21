@@ -7,15 +7,27 @@
  			return tv;
  		})
  	}
- 	tile.prototype.merge=function(n){
- 		var isMerge=this.edge.indexOf(n);
- 		if(isMerge===-1) return false;
- 		this.edge.splice(isMerge,1); return true;
+ 	tile.prototype.merge=function(anotherTile){
+ 		if(anotherTile.edge.length<=0) return false; 
+ 		var thisTileLen=this.edge.length;
+ 		var ti=0;
+ 		var i;
+ 		while(ti<thisTileLen){
+ 			if((i=anotherTile.edge.indexOf(this.edge[ti]))!=-1){
+ 				this.edge.splice(ti,1);
+ 				anotherTile.edge.splice(i,1);
+ 				console.log(this.value.toString() + " has merged with "+ anotherTile.value.toString());
+ 				return true;
+ 			}
+ 			ti++;	
+ 		}
+ 		return false;
  	}
  	tile.prototype.calPoint=function(){
- 		if( this.edge.length<=0 ) return 0;
+ 		/*if( this.edge.length<=0 ) return 0;
  		if( this.edge.length>1 ){ return this.value[0]*2 } // for the tile with the same value
- 		else return this.value[0]; // for the tile with different value
+ 		else return this.value[0]; // for the tile with different value*/
+ 		return this.edge.length===0? false:true; 
  	}
 
  	//Player-------------------------------
@@ -112,41 +124,58 @@
  	}
 
  	dominoGame.prototype.getOpenEdge=function(){
- 		if (this.playingPool.length===0) return [];
  		return this.playingPool.map(function(t){
- 			if(t.calPoint) return t;
+ 			if(t.calPoint()) return t;
  		})
  	}
  	dominoGame.prototype.putTile=function(player,cb){
  		t=player.put();
- 		this.playingPool.push(t);
  		if(cb) cb(t);
+ 		this.playingPool.push(t);
+ 		return t;
  	}
- 	dominoGame.prototype.pickTile=function(player,cb){
+ 	dominoGame.prototype.pickTile=function(player){
  		var t=this.store.pop();
  		player.pick(t);
- 		if(cb) cb(t);
  	}
  	dominoGame.prototype.play=function(){
  		var _this=this;
- 		this.playerPool.map(function(p){
- 			_this.putTile(p,function(){
- 				/*console.log("playingPool ");
- 				console.log(_this.playingPool);*/
- 				console.log(_this.getOpenEdge().map(function(v){
- 					return v.value.toString();
- 				}));
- 			});
- 			_this.pickTile(p,function(){
- 				console.log("Sotre ");
- 				console.log(_this.store);
- 			});
+ 		var currentPlayerTile;
+ 		var isFirstRound=true;
+ 		var currentOpenEdge;
+ 		this.playerPool.map(function(currentPlayer){
+ 			var hasMerged=false;
+ 			if(isFirstRound){
+ 				_this.putTile(currentPlayer);
+ 				isFirstRound=false;
+ 			}
+ 			else{	
+ 				console.log("-----------"+currentPlayer.name+"--------------");
+ 				_this.putTile(currentPlayer,function(t){
+					currentPlayerTile=t;
+					currentOpenEdge=_this.getOpenEdge();
+					console.log(currentOpenEdge.map(function(v){
+ 						return v.edge.toString();
+ 					}));
+					currentOpenEdge.map(function(currentPoolTile){
+		 				if(!hasMerged){
+		 					if(currentPlayerTile.merge(currentPoolTile)) hasMerged=true;
+		 				}
+ 					});
+ 					console.log(currentOpenEdge.map(function(v){
+ 						return v.edge.toString();
+ 					}));
+ 				});
+ 			}
  		})
  	}
  	//----------------------------------------
     var d=new dominoGame(o.set,o.players);
     d.buildGame();
     d.play();
+    console.log(d.tilesPool.map(function(v){
+    	return v.edge.toString();
+    }))
  })({
  	players		: 	3,
  	set 		:  	6
