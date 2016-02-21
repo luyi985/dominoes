@@ -2,18 +2,21 @@
  var dominos=(function(o){
  	//tile--------------------------
  	var tile=function(v){
- 		this.value=v;
+ 		this.value=v.toString();
  		this.edge=v.map(function(tv){
  			return tv;
  		})
  	}
  	tile.prototype.merge=function(anotherTile){
- 		if(anotherTile.edge.length<=0) return false; 
+ 		if(!anotherTile||!anotherTile.edge) return false;
+ 		if(anotherTile.edge.length===0) return false; 
  		var thisTileLen=this.edge.length;
+ 		//console.dir(anotherTile);
  		var ti=0;
  		var i;
  		while(ti<thisTileLen){
- 			if((i=anotherTile.edge.indexOf(this.edge[ti]))!=-1){
+ 			i=-1;
+ 			if((i=anotherTile.edge.indexOf(this.edge[ti]))>-1){
  				this.edge.splice(ti,1);
  				anotherTile.edge.splice(i,1);
  				console.log(this.value.toString() + " has merged with "+ anotherTile.value.toString());
@@ -27,7 +30,7 @@
  		/*if( this.edge.length<=0 ) return 0;
  		if( this.edge.length>1 ){ return this.value[0]*2 } // for the tile with the same value
  		else return this.value[0]; // for the tile with different value*/
- 		return this.edge.length===0? false:true; 
+ 		return this.edge.length===0?false:true; 
  	}
 
  	//Player-------------------------------
@@ -37,7 +40,7 @@
  	}
  	player.prototype.showHand=function(){
  		var _this=this;
- 		console.log("--------"+_this.name+"---------");
+ 		console.log("--------"+_this.name+" tiles---------");
  		console.log(_this.tiles);
  		//this.tiles.map(function(v){});
  	}
@@ -118,9 +121,10 @@
  		var isPlayerEmpty=false;
  		var isStoreEmpty=this.store.length>0?false:true;
  		this.playerPool.map(function(v){
- 			if(v.tiles.length<=0) isPlayerEmpty=ture;
+ 			if(v.tiles.length<=0) isPlayerEmpty=true;
  		});
- 		return isPlayerEmpty&&isStoreEmpty;
+ 		//return isPlayerEmpty&&isStoreEmpty;
+ 		return !isPlayerEmpty;
  	}
 
  	dominoGame.prototype.getOpenEdge=function(){
@@ -143,31 +147,37 @@
  		var currentPlayerTile;
  		var isFirstRound=true;
  		var currentOpenEdge;
- 		this.playerPool.map(function(currentPlayer){
- 			var hasMerged=false;
- 			if(isFirstRound){
- 				_this.putTile(currentPlayer);
- 				isFirstRound=false;
- 			}
- 			else{	
- 				console.log("-----------"+currentPlayer.name+"--------------");
- 				_this.putTile(currentPlayer,function(t){
-					currentPlayerTile=t;
-					currentOpenEdge=_this.getOpenEdge();
-					console.log(currentOpenEdge.map(function(v){
- 						return v.edge.toString();
- 					}));
-					currentOpenEdge.map(function(currentPoolTile){
-		 				if(!hasMerged){
-		 					if(currentPlayerTile.merge(currentPoolTile)) hasMerged=true;
-		 				}
- 					});
- 					console.log(currentOpenEdge.map(function(v){
- 						return v.edge.toString();
- 					}));
- 				});
- 			}
- 		})
+ 		while(this.isfinish()){
+	 		this.playerPool.map(function(currentPlayer){
+	 			var hasMerged=false;
+	 			if(isFirstRound){
+	 				_this.putTile(currentPlayer);
+	 				isFirstRound=false;
+	 			}
+	 			else{	
+	 				console.log("-----------"+currentPlayer.name+"--------------");
+	 				_this.putTile(currentPlayer,function(t){
+						currentPlayerTile=t;
+						currentOpenEdge=_this.getOpenEdge();
+						/*console.log(currentOpenEdge.map(function(v){
+	 						return v.edge.toString();
+	 					}));*/
+	 					console.dir(currentOpenEdge);
+						currentOpenEdge.map(function(currentPoolTile){
+			 				if(!hasMerged){
+			 					var r=currentPlayerTile.merge(currentPoolTile);
+			 					console.log(r);
+			 					if(r) hasMerged=true;
+			 				}
+	 					});
+	 					console.dir(currentOpenEdge);
+	 					/*console.log(currentOpenEdge.map(function(v){
+	 						return v.edge.toString();
+	 					}));*/
+	 				});
+	 			}
+	 		});
+ 		}
  	}
  	//----------------------------------------
     var d=new dominoGame(o.set,o.players);
