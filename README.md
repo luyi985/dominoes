@@ -9,3 +9,5 @@ http://www.domino-games.com/domino-rules/allfives-rules.html
  *   board at the end of the simulation
  * - document any assumptions you've made or any rules that you weren't
  *   able to implement fully
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/luyi985/dominoes.svg)](https://greenkeeper.io/)
